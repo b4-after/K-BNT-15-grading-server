@@ -1,0 +1,15 @@
+# Mac OS
+.DS_Store
+
+# Packages
+.venv
+
+# Cache
+__pycache__
+.mypy_cache
+
+# Environment
+env.json
+
+# Event
+event.json
