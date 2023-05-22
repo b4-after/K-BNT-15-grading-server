@@ -28,5 +28,5 @@ class AWSS3Service:
         return self.client.generate_presigned_url(
             ClientMethod=AWSS3ClientMethod.GET_OBJECT.value,
             Params={"Bucket": bucket_name, "Key": object_key},
-            ExpiresIn=300,
+            ExpiresIn=3600,
         )
