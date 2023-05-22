@@ -38,12 +38,12 @@ def lambda_handler(event: AWSLambdaEventBody, context: AWSLambdaContext) -> HTTP
         return HTTPResponse(
             statusCode=HTTPStatusCode.UNPROCESSABLE_ENTITY.value,
             headers={"Content-Type": "application/json"},
-            body=json.dumps({"detail": str(value_error).encode("UTF-8")}),
+            body=json.dumps({"detail": str(value_error)}),
         )
 
     except Exception as error:
         return HTTPResponse(
             statusCode=HTTPStatusCode.INTERNAL_SERVER_ERROR.value,
             headers={"Content-Type": "application/json"},
-            body=json.dumps({"detail": str(error).encode("UTF-8")}),
+            body=json.dumps({"detail": str(error)}),
         )

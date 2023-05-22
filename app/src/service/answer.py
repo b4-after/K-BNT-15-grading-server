@@ -56,6 +56,7 @@ class AnswerService:
 
     def _recognize_text(self, object_key: str, bucket_name: str) -> str:
         presigned_url: str = self.s3.get_presigned_url(object_key=object_key, bucket_name=bucket_name)
+        print("presigned_url: ", presigned_url)
         return self.clova.recognize_voice_by_external_url(url=presigned_url)
 
     def grade(self, s3_information: AWSS3) -> None:
