@@ -31,6 +31,7 @@ class ClovaService:
             url=target_url,
             data=json.dumps({"url": url, "language": "ko-KR", "completion": "sync"}).encode("UTF-8"),
         ).json()
+        print(response)
         if self._is_succeeded(response=response):
             return response.get("text")
 

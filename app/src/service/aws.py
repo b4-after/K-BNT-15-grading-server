@@ -25,7 +25,6 @@ class AWSS3Service:
         )
 
     def get_presigned_url(self, object_key: str, bucket_name: str) -> HttpUrl:
-        print(object_key, bucket_name)
         return self.client.generate_presigned_url(
             ClientMethod=AWSS3ClientMethod.GET_OBJECT.value,
             Params={"Bucket": bucket_name, "Key": object_key},
