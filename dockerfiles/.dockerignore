@@ -1,0 +1,12 @@
+# Package
+*/.venv
+*/poetry.toml
+
+# AWS SAM
+*/.aws-sam
+
+# pre-commit
+*/.pre-commit-config.yaml
+
+# Makefile
+*/Makefile

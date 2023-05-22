@@ -1,29 +1,29 @@
 [tool.poetry]
-name = "k-bnt-15"
+name = "k-bnt-15-grading-server"
 version = "1"
-description = "[ 한국외대 종합설계 B4-After ] K-BNT-15 채점 서버"
-authors = ["taehyun <0417taehyun@gmail.com>"]
+description = "[ 한국외대 종합설계B4-After ] K-BNT-15 채점 서버"
+authors = ["Taehun Lee <0417taehyun@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-boto3 = "^1.26.62"
-sqlalchemy = "^2.0.1"
+boto3 = "^1.25"
+sqlalchemy = "^2.0.15"
 mysqlclient = "^2.1.1"
+pydantic = "^1.10.7"
+konlpy = "^0.6.0"
 requests = "^2.28.2"
+
+[tool.poetry.group.local.dependencies]
+localstack = "^2.0.2"
+aws-sam-cli = "^1.84.0"
 
 [tool.poetry.group.linter.dependencies]
 pre-commit = "^2.21.0"
 mypy = "^0.991"
 black = "^22.12.0"
 isort = "^5.11.4"
-
-[tool.poetry.group.security.dependencies]
-ggshield = "^1.14.5"
-
-[tool.poetry.group.test.dependencies]
-pytest = "^7.2.2"
 
 [tool.black]
 line-length = 120
@@ -38,8 +38,6 @@ profile = "black"
 
 [tool.mypy]
 python_version = "3.9"
-no_namespace_packages = true
-no_strict_optional = true
 
 [build-system]
 requires = ["poetry-core"]
