@@ -1,0 +1,45 @@
+Transform: AWS::Serverless-2016-10-31
+Description: K-BNT-15 채점 서버
+
+Resources:
+  KBNT15GradingServerTest:
+    Type: AWS::Serverless::Function
+    Metadata:
+      Dockerfile: ./dockerfiles/Dockerfile
+      DockerContext: ./
+    Properties:
+      FunctionName: K-BNT-15-grading-server
+      Runtime: python:3.9
+      PackageType: Image
+      Timeout: 600
+      MemorySize: 1024
+      Environment:
+        Variables:
+          AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
+          AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
+          AWS_REGION: AWS_REGION
+          AWS_ENDPOINT_URL: AWS_ENDPOINT_URL
+          DATABASE_HOST: DATABASE_HOST
+          DATABASE_PORT: DATABASE_PORT
+          DATABASE_NAME: DATABASE_NAME
+          DATABASE_USER: DATABASE_USER
+          DATABASE_PASSWORD: DATABASE_PASSWORD
+          CLOVA_SPEECH_SECRET_KEY: CLOVA_SPEECH_SECRET_KEY
+          CLOVA_SPEECH_API_INVOKE_URL: CLOVA_SPEECH_API_INVOKE_URL
+
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue:
+              Ref: S3UploadSQSQueue
+      Tags:
+        Name: K-BNT-15
+
+  S3UploadSQSQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: K-BNT-15
+      Tags:
+        - Key: Name
+          Value: K-BNT-15

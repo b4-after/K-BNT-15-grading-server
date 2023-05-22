@@ -13,3 +13,9 @@ env.json
 
 # Event
 event.json
+
+# Test data
+.data
+
+# AWS SAM
+.aws-sam

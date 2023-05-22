@@ -1,0 +1,9 @@
+FROM amazon/aws-cli
+
+COPY ./.data/ /data/
+COPY ./scripts/mocking_aws_s3.sh /scripts/mocking_aws_s3.sh
+
+RUN chmod +x /scripts/mocking_aws_s3.sh
+
+ENTRYPOINT [ ]
+CMD ["/scripts/mocking_aws_s3.sh"]
