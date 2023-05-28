@@ -23,7 +23,7 @@ class ClovaService:
         )
 
     def _is_succeeded(self, response: ClovaResponse) -> bool:
-        return response.get("result") == ClovaResultType.SUCCEEDED.value
+        return response.get("result") == ClovaResultType.COMPLETED.value
 
     def recognize_voice_by_external_url(self, url: HttpUrl) -> str:
         headers: dict[str, str] = self.session
