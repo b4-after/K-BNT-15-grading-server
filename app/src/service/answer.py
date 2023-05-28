@@ -37,13 +37,15 @@ class AnswerService:
 
     def _parse_nouns_from_text(self, text: str) -> Optional[set[str]]:
         # parser: Kkma = Kkma()
-        # return set(parser.nouns(phrase=text))
+        # return set(parser.nouns(phrase=text))\
+        print("text: ", text)
         if not text:
             return None
 
         return set(text.split(sep=" "))
 
     def _compare_all_nouns(self, nouns: Optional[set[str]], answer_word: str) -> AnswerStatus:
+        print("nouns: ", nouns)
         if not nouns:
             return AnswerStatus.INCORRECT
         for noun in nouns:
