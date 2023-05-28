@@ -665,6 +665,16 @@ gmpy = ["gmpy"]
 gmpy2 = ["gmpy2"]
 
 [[package]]
+name = "ffmpeg"
+version = "1.4"
+description = "ffmpeg python package url [https://github.com/jiashaokun/ffmpeg]"
+optional = false
+python-versions = "*"
+files = [
+    {file = "ffmpeg-1.4.tar.gz", hash = "sha256:6931692c890ff21d39938433c2189747815dca0c60ddc7f9bb97f199dba0b5b9"},
+]
+
+[[package]]
 name = "ffprobe"
 version = "0.5"
 description = "Wrapper around ffprobe command to extract metadata from media files"
@@ -2827,4 +2837,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "92ee1d667219237779de5946819ee977ec923b78fabc6a350d9f5a52f7eb9ed2"
+content-hash = "25ac5f68477efd9ddd74ffd770803d47bc32f0c7367d4dcded7f88573929a3d5"
