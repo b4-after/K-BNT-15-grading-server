@@ -11,9 +11,9 @@ COPY app/src ${LAMBDA_TASK_ROOT}/src
 
 FROM public.ecr.aws/lambda/python:3.9
 
-RUN yum -y install gcc libmariadb-dev default-libmysqlclient-dev python-devel mysql-devel default-jdk https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm ffmpeg ffmpeg-devel
-
 COPY --from=builder ${LAMBDA_TASK_ROOT} ${LAMBDA_TASK_ROOT}
+
+RUN yum -y install gcc libmariadb-dev default-libmysqlclient-dev python-devel mysql-devel ffmpeg
 
 WORKDIR ${LAMBDA_TASK_ROOT}/src
 ENV PYTHONPATH="$PYTHONPATH:${LAMBDA_TASK_ROOT}"
