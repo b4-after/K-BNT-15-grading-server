@@ -59,6 +59,7 @@ class AnswerService:
 
     def _grade_recognized_text(self, object_key: str, text: str, db: Session) -> None:
         answer: Answer = self.answer.get_by_object_key(db=db, object_key=object_key)
+        print(answer)
         answer_status: AnswerStatus = self._get_answer_state(
             recognized_text=text, answer_word=answer.get("answer_word")
         )
