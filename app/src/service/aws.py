@@ -19,7 +19,7 @@ class AWSS3Service:
             # endpoint_url=AWSS3Service._AWS_ENDPOINT_URL,
             # aws_access_key_id=AWSS3Service._AWS_ACCESS_KEY_ID,
             # aws_secret_access_key=AWSS3Service._AWS_SECRET_ACCESS_KEY,
-            region_name=AWSS3Service._AWS_REGION,
+            # region_name=AWSS3Service._AWS_REGION,
         )
 
     def get_presigned_url(self, object_key: str, bucket_name: str) -> HttpUrl:
@@ -29,5 +29,5 @@ class AWSS3Service:
             ExpiresIn=3600,
         )
 
-    def download_file(self, object_key: str, bucket_name: str, file) -> None:
+    def download_file(self, object_key: str, bucket_name: str, file: bytes) -> None:
         self.client.download_fileobj(Bucket=bucket_name, Key=object_key, Fileobj=file)

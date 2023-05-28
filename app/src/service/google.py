@@ -1,4 +1,4 @@
-from tempfile import _TemporaryFileWrapper
+from typing import BinaryIO
 
 from google.cloud.speech import (
     RecognitionAudio,
@@ -41,7 +41,7 @@ class SpeechToTextService:
             )
         )
 
-    def recognize(self, file: _TemporaryFileWrapper[bytes]) -> str:
+    def recognize(self, file: BinaryIO) -> str:
         response: RecognizeResponse = self.client.recognize(
             request=RecognizeRequest(
                 config=RecognitionConfig(language_code="ko-KR", model="video"), audio=RecognitionAudio(content=file)
