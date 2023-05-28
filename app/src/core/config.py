@@ -25,7 +25,7 @@ class DatabaseSettings(BaseSettings):
         return f"mysql+mysqldb://{USER_INFORMATION}@{DATABASE_INFORMATION}/{self.DATABASE_NAME}"
 
 
-class GoogleCloudSettings(BaseException):
+class GoogleCloudSettings(BaseSettings):
     GOOGLE_CLOUD_PROJECT_ID: str
     GOOGLE_CLOUD_PRIVATE_KEY_ID: str
     GOOGLE_CLOUD_PRIVATE_KEY: str
