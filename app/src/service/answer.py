@@ -60,7 +60,7 @@ class AnswerService:
         # return self.clova.recognize_voice_by_external_url(url=presigned_url)
 
         with NamedTemporaryFile(mode="r+b") as file:
-            self.s3.download_file(object_key=object_key, bucket_name=bucket_name, data=file)
+            self.s3.download_file(object_key=object_key, bucket_name=bucket_name, file=file)
             file.seek(0)
             return self.clova.recognize_voice_by_file(file=file)
 
