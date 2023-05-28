@@ -29,7 +29,7 @@ class SpeechToTextService:
                     "type": GoogleOAuthType.SERVICE_ACCOUNT.value,
                     "project_id": SpeechToTextService._GOOGLE_CLOUD_PROJECT_ID,
                     "private_key_id": SpeechToTextService._GOOGLE_CLOUD_PRIVATE_KEY_ID,
-                    "private_key": SpeechToTextService._GOOGLE_CLOUD_PRIVATE_KEY,
+                    "private_key": SpeechToTextService._GOOGLE_CLOUD_PRIVATE_KEY.replace("\\n", "\n"),
                     "client_email": SpeechToTextService._GOOGLE_CLOUD_CLIENT_EMAIL,
                     "client_id": SpeechToTextService._GOOGLE_CLOUD_CLIENT_ID,
                     "auth_uri": GoogleOAuthURI.AUTH.value,
