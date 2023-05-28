@@ -2,6 +2,7 @@ from tempfile import NamedTemporaryFile
 from typing import Optional
 
 from konlpy.tag import Kkma
+from pydantic import HttpUrl
 from sqlalchemy.orm import Session
 
 from src.constant import AnswerStatus
@@ -58,11 +59,14 @@ class AnswerService:
         self.answer.update_state(db=db, answer_id=answer.get("answer_id"), answer_status=answer_status)
 
     def _recognize_text(self, object_key: str, bucket_name: str) -> str:
-        with NamedTemporaryFile(mode="r+b") as file:
-            self.s3.download_file(object_key=object_key, bucket_name=bucket_name, file=file)
-            file.seek(0)
-            return self.clova.recognize_voice_by_file(file=file)
-            # return self.google.recognize(file=file)
+        url: HttpUrl = self.s3.get_presigned_url(object_key=object_key, bucket_name=bucket_name)
+        return self.clova.recognize_voice_by_external_url(url=url)
+
+        # with NamedTemporaryFile(mode="r+b") as file:
+        #     self.s3.download_file(object_key=object_key, bucket_name=bucket_name, file=file)
+        #     file.seek(0)
+        #     return self.clova.recognize_voice_by_file(file=file)
+        # return self.google.recognize(file=file)
 
     def grade(self, s3_information: AWSS3) -> None:
         db: Session = next(get_db())
