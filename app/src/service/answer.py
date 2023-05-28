@@ -2,6 +2,7 @@ from tempfile import NamedTemporaryFile
 from typing import Optional
 
 from konlpy.tag import Kkma
+from moviepy.editor import AudioFileClip
 from pydantic import HttpUrl
 from sqlalchemy.orm import Session
 
@@ -66,14 +67,19 @@ class AnswerService:
         self.answer.update_state(db=db, answer_id=answer.get("answer_id"), answer_status=answer_status)
 
     def _recognize_text(self, object_key: str, bucket_name: str) -> str:
-        url: HttpUrl = self.s3.get_presigned_url(object_key=object_key, bucket_name=bucket_name)
-        print("presinged url: ", url)
-        return self.clova.recognize_voice_by_external_url(url=url)
+        # url: HttpUrl = self.s3.get_presigned_url(object_key=object_key, bucket_name=bucket_name)
+        # print("presinged url: ", url)
+        # return self.clova.recognize_voice_by_external_url(url=url)
 
-        # with NamedTemporaryFile(mode="r+b") as file:
-        #     self.s3.download_file(object_key=object_key, bucket_name=bucket_name, file=file)
-        #     file.seek(0)
-        #     return self.clova.recognize_voice_by_file(file=file)
+        with NamedTemporaryFile(mode="r+b", suffix=".wmb", delete=True) as wmb_file:
+            self.s3.download_file(object_key=object_key, bucket_name=bucket_name, file=wmb_file)
+
+            with NamedTemporaryFile(mode="r+b", suffix=".wav", delete=True) as wav_file:
+                clip: AudioFileClip = AudioFileClip(filename=wmb_file.name)
+                clip.write_audiofile(wav_file.name)
+                wav_file.seek(offset=0)
+                return self.clova.recognize_voice_by_file(file=wav_file)
+
         # return self.google.recognize(file=file)
 
     def grade(self, s3_information: AWSS3) -> None:
