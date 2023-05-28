@@ -11,7 +11,7 @@ COPY app/src ${LAMBDA_TASK_ROOT}/src
 
 FROM public.ecr.aws/lambda/python:3.9
 
-RUN yum -y install gcc libmariadb-dev default-libmysqlclient-dev python-devel mysql-devel default-jdk
+RUN yum -y install gcc libmariadb-dev default-libmysqlclient-dev python-devel mysql-devel default-jdk ffmpeg ffmpeg-devel
 COPY --from=builder ${LAMBDA_TASK_ROOT} ${LAMBDA_TASK_ROOT}
 
 RUN export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
