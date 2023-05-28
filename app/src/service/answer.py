@@ -75,8 +75,8 @@ class AnswerService:
             self.s3.download_file(object_key=object_key, bucket_name=bucket_name, file=wmb_file)
 
             with NamedTemporaryFile(mode="r+b", suffix=".wav", delete=True) as wav_file:
-                clip: AudioFileClip = AudioFileClip(filename=wmb_file.name, format="webm")
-                clip.write_audiofile(wav_file.name, format="wav")
+                clip: AudioFileClip = AudioFileClip(filename=wmb_file.name)
+                clip.write_audiofile(wav_file.name)
                 wav_file.seek(offset=0)
                 return self.clova.recognize_voice_by_file(file=wav_file)
 
