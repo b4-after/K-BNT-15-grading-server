@@ -25,12 +25,21 @@ class DatabaseSettings(BaseSettings):
         return f"mysql+mysqldb://{USER_INFORMATION}@{DATABASE_INFORMATION}/{self.DATABASE_NAME}"
 
 
+class GoogleCloudSettings(BaseException):
+    GOOGLE_CLOUD_PROJECT_ID: str
+    GOOGLE_CLOUD_PRIVATE_KEY_ID: str
+    GOOGLE_CLOUD_PRIVATE_KEY: str
+    GOOGLE_CLOUD_CLIENT_EMAIL: str
+    GOOGLE_CLOUD_CLIENT_ID: str
+    GOOGLE_CLOUD_CLIENT_X509_CERT_URL: str
+
+
 class NCPSettings(BaseSettings):
     CLOVA_SPEECH_SECRET_KEY: str
     CLOVA_SPEECH_API_INVOKE_URL: str
 
 
-class ApplicationSettings(AWSSettings, DatabaseSettings, NCPSettings):
+class ApplicationSettings(AWSSettings, DatabaseSettings, GoogleCloudSettings, NCPSettings):
     pass
 
 
