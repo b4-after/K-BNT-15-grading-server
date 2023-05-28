@@ -14,15 +14,6 @@ from src.service import AnswerService
 
 
 def lambda_handler(event: AWSLambdaEventBody, context: AWSLambdaContext) -> HTTPResponse:
-    import os
-    import subprocess
-
-    javac_location = subprocess.check_output(["which", "javac"]).strip().decode()
-    real_path = os.path.realpath(javac_location)
-    java_home = os.path.dirname(os.path.dirname(real_path))
-    print(java_home)
-    os.environ["JAVA_HOME"] = java_home
-
     logger: Logger = getLogger()
     logger.setLevel(level=DEBUG)
     answer: AnswerService = AnswerService()
