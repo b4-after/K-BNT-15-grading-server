@@ -18,7 +18,6 @@ class ClovaService:
         self.session.headers.update(
             {
                 "Accept": "application/json;UTF-8",
-                "Content-Type": "application/json;UTF-8",
                 "X-CLOVASPEECH-API-KEY": ClovaService._X_CLOVASPEECH_API_KEY,
             }
         )
@@ -27,9 +26,13 @@ class ClovaService:
         return response.get("result") == ClovaResultType.SUCCEEDED.value
 
     def recognize_voice_by_external_url(self, url: HttpUrl) -> str:
+        headers: dict[str, str] = self.session
+        headers.update({"Content-Type": "application/json;UTF-8"})
+
         target_url: HttpUrl = "".join([ClovaService._CLOVA_SPEECH_API_INVOKE_URL, "/recognizer/url"])
         response: ClovaResponse = self.session.post(
             url=target_url,
+            headers=headers,
             data=json.dumps({"url": url, "language": "ko-KR", "completion": "sync"}).encode("UTF-8"),
         ).json()
         print(response)
