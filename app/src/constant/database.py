@@ -1,3 +1,4 @@
+import os
 from enum import Enum
 from types import DynamicClassAttribute
 
@@ -11,7 +12,8 @@ class AnswerQuery(str, Enum):
 
     @DynamicClassAttribute
     def value(self) -> FilePath:
-        return "/".join([AnswerQuery._BASE_PATH, self._value_])
+        _CURRENT_DIRECTORY_PATH: FilePath = os.path.dirname(os.path.abspath(__file__))
+        return os.path.join(_CURRENT_DIRECTORY_PATH, "/".join([AnswerQuery._BASE_PATH, self._value_]))
 
 
 class AnswerStatus(str, Enum):
