@@ -5,7 +5,7 @@ from pydantic import FilePath
 
 
 class AnswerQuery(str, Enum):
-    _BASE_PATH: str = "src/sql/answer"
+    _BASE_PATH: str = "sql/answer"
     GET_BY_OBJECT_KEY: str = "get_by_object_key.sql"
     UPDATE_ANSWER_STATUS: str = "update_answer_status.sql"
 
