@@ -67,6 +67,7 @@ class AnswerService:
 
     def _recognize_text(self, object_key: str, bucket_name: str) -> str:
         url: HttpUrl = self.s3.get_presigned_url(object_key=object_key, bucket_name=bucket_name)
+        print("presinged url: ", url)
         return self.clova.recognize_voice_by_external_url(url=url)
 
         # with NamedTemporaryFile(mode="r+b") as file:
