@@ -22,7 +22,7 @@ class DatabaseSettings(BaseSettings):
     def DATABASE_URL(self) -> str:
         USER_INFORMATION: str = ":".join([self.DATABASE_USER, self.DATABASE_PASSWORD])
         DATABASE_INFORMATION: str = ":".join([self.DATABASE_HOST, self.DATABASE_PORT])
-        return f"mysql+mysqldb://{USER_INFORMATION}@{DATABASE_INFORMATION}/{self.DATABASE_NAME}"
+        return f"mysql+mysqldb://{USER_INFORMATION}@{DATABASE_INFORMATION}/{self.DATABASE_NAME}?charset=utf8"
 
 
 class GoogleCloudSettings(BaseSettings):
