@@ -2,8 +2,8 @@ from tempfile import NamedTemporaryFile
 from typing import Optional
 
 from konlpy.tag import Kkma
-from moviepy.editor import AudioFileClip
 from pydantic import HttpUrl
+from pydub import AudioSegment
 from sqlalchemy.orm import Session
 
 from src.constant import AnswerStatus
@@ -71,12 +71,12 @@ class AnswerService:
         # print("presinged url: ", url)
         # return self.clova.recognize_voice_by_external_url(url=url)
 
-        with NamedTemporaryFile(mode="r+b", delete=True) as wmb_file:
-            self.s3.download_file(object_key=object_key, bucket_name=bucket_name, file=wmb_file)
+        with NamedTemporaryFile(mode="r+b", suffix=".webm", delete=True) as webm_file:
+            self.s3.download_file(object_key=object_key, bucket_name=bucket_name, file=webm_file)
 
+            webm_audio: AudioSegment = AudioSegment.from_file(webm_file.name, format="webm")
             with NamedTemporaryFile(mode="r+b", suffix=".wav", delete=True) as wav_file:
-                clip: AudioFileClip = AudioFileClip(filename=wmb_file.name)
-                clip.write_audiofile(wav_file.name)
+                webm_audio.export(wav_file.name, format="wav")
                 wav_file.seek(offset=0)
                 return self.clova.recognize_voice_by_file(file=wav_file)
 
