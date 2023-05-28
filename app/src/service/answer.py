@@ -61,8 +61,8 @@ class AnswerService:
         with NamedTemporaryFile(mode="r+b") as file:
             self.s3.download_file(object_key=object_key, bucket_name=bucket_name, file=file)
             file.seek(0)
-            # return self.clova.recognize_voice_by_file(file=file)
-            return self.google.recognize(file=file)
+            return self.clova.recognize_voice_by_file(file=file)
+            # return self.google.recognize(file=file)
 
     def grade(self, s3_information: AWSS3) -> None:
         db: Session = next(get_db())
