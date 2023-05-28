@@ -26,7 +26,7 @@ class ClovaService:
         return response.get("result") == ClovaResultType.COMPLETED.value
 
     def recognize_voice_by_external_url(self, url: HttpUrl) -> str:
-        headers: dict[str, str] = self.session
+        headers: dict[str, str] = self.session.headers
         headers.update({"Content-Type": "application/json;UTF-8"})
 
         target_url: HttpUrl = "".join([ClovaService._CLOVA_SPEECH_API_INVOKE_URL, "/recognizer/url"])
