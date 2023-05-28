@@ -2,7 +2,7 @@ Transform: AWS::Serverless-2016-10-31
 Description: K-BNT-15 채점 서버
 
 Resources:
-  KBNT15GradingServerTest:
+  KBNT15GradingServer:
     Type: AWS::Serverless::Function
     Metadata:
       Dockerfile: ./dockerfiles/Dockerfile

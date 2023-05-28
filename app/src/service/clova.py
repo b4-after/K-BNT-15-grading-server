@@ -1,4 +1,5 @@
 import json
+from tempfile import _TemporaryFileWrapper
 
 from pydantic import HttpUrl
 from requests import Session  # type: ignore
@@ -30,6 +31,25 @@ class ClovaService:
         response: ClovaResponse = self.session.post(
             url=target_url,
             data=json.dumps({"url": url, "language": "ko-KR", "completion": "sync"}).encode("UTF-8"),
+        ).json()
+        print(response)
+        if self._is_succeeded(response=response):
+            return response.get("text")
+
+        raise ValueError(response.get("message"))
+
+    def recognize_voice_by_file(self, file: _TemporaryFileWrapper) -> str:
+        target_url: HttpUrl = "".join([ClovaService._CLOVA_SPEECH_API_INVOKE_URL, "/recognizer/upload"])
+        response: ClovaResponse = self.session.post(
+            url=target_url,
+            files={
+                "media": file,
+                "params": (
+                    None,
+                    json.dumps({"language": "ko-KR", "completion": "sync"}, ensure_ascii=False).encode("UTF-8"),
+                    "application/json",
+                ),
+            },
         ).json()
         print(response)
         if self._is_succeeded(response=response):

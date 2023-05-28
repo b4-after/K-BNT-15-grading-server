@@ -16,12 +16,10 @@ class AWSS3Service:
     def __init__(self) -> None:
         self.client: client = client(
             service_name=AWSServiceName.S3.value,
-            # endpoint_url=AWSS3Service._AWS_ENDPOINT_URL,
-            # aws_access_key_id=AWSS3Service._AWS_ACCESS_KEY_ID,
-            # aws_secret_access_key=AWSS3Service._AWS_SECRET_ACCESS_KEY,
-            # region_name=AWSS3Service._AWS_REGION,
-            # verify=False,
-            # use_ssl=False,
+            endpoint_url=AWSS3Service._AWS_ENDPOINT_URL,
+            aws_access_key_id=AWSS3Service._AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=AWSS3Service._AWS_SECRET_ACCESS_KEY,
+            region_name=AWSS3Service._AWS_REGION,
         )
 
     def get_presigned_url(self, object_key: str, bucket_name: str) -> HttpUrl:
@@ -30,3 +28,6 @@ class AWSS3Service:
             Params={"Bucket": bucket_name, "Key": object_key},
             ExpiresIn=3600,
         )
+
+    def download_file(self, object_key: str, bucket_name: str, file) -> None:
+        self.client.download_fileobj(Bucket=bucket_name, Key=object_key, Fileobj=file)
