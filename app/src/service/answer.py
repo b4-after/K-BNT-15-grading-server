@@ -8,6 +8,7 @@ from src.constant import AnswerStatus
 from src.custom import AWSS3, Answer
 from src.database import CRUDAnswer, get_db
 from src.service.aws import AWSS3Service
+from src.service.clova import ClovaService
 from src.service.google import SpeechToTextService
 
 
@@ -15,6 +16,7 @@ class AnswerService:
     def __init__(self) -> None:
         self.answer: CRUDAnswer = CRUDAnswer()
         self.s3: AWSS3Service = AWSS3Service()
+        self.clova: ClovaService = ClovaService()
         self.google: SpeechToTextService = SpeechToTextService()
 
     def _soundex_algorithm_korean(self, word: str) -> str:
@@ -59,7 +61,8 @@ class AnswerService:
         with NamedTemporaryFile(mode="r+b") as file:
             self.s3.download_file(object_key=object_key, bucket_name=bucket_name, file=file)
             file.seek(0)
-            return self.google.recognize(file=file)
+            return self.clova.recognize_voice_by_file(file=file)
+            # return self.google.recognize(file=file)
 
     def grade(self, s3_information: AWSS3) -> None:
         db: Session = next(get_db())

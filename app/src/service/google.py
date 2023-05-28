@@ -44,7 +44,8 @@ class SpeechToTextService:
     def recognize(self, file: BinaryIO) -> str:
         response: RecognizeResponse = self.client.recognize(
             request=RecognizeRequest(
-                config=RecognitionConfig(language_code="ko-KR", model="video"), audio=RecognitionAudio(content=file)
+                config=RecognitionConfig(language_code="ko-KR", model="video"),
+                audio=RecognitionAudio(content=file.read()),
             )
         )
         return response.results.pop().alternatives.pop().transcript
