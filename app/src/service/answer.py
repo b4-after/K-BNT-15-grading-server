@@ -67,10 +67,11 @@ class AnswerService:
         self.answer.update_state(db=db, answer_id=answer.get("answer_id"), answer_status=answer_status)
 
     def _recognize_text(self, object_key: str, bucket_name: str) -> str:
-        with NamedTemporaryFile(mode="r+b", suffix=".webm", delete=True) as webm_file:
+        with NamedTemporaryFile(mode="r+b", suffix=".webm") as webm_file:
             self.s3.download_file(object_key=object_key, bucket_name=bucket_name, file=webm_file)
-            with NamedTemporaryFile(mode="r+b", suffix=".wav", delete=True) as wav_file:
+            with NamedTemporaryFile(mode="r+b", suffix=".wav") as wav_file:
                 subprocess.run(["./ffmpeg", "-y", "-i", webm_file.name, wav_file.name], check=True)
+                self.s3.upload_file(object_key=wav_file.name, bucket_name=bucket_name, file=wav_file)
                 wav_file.seek(0)
                 return self.clova.recognize_voice_by_file(file=wav_file)
 

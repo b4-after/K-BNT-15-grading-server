@@ -31,3 +31,6 @@ class AWSS3Service:
 
     def download_file(self, object_key: str, bucket_name: str, file: bytes) -> None:
         self.client.download_fileobj(Bucket=bucket_name, Key=object_key, Fileobj=file)
+
+    def upload_file(self, object_key: str, bucket_name: str, file: bytes) -> None:
+        self.client.upload_fileobj(Bucket=bucket_name, Key=object_key, Fileobj=file)
