@@ -71,7 +71,7 @@ class AnswerService:
             self.s3.download_file(object_key=object_key, bucket_name=bucket_name, file=webm_file)
             with NamedTemporaryFile(mode="r+b", suffix=".wav", delete=True) as wav_file:
                 subprocess.run(["./ffmpeg", "-y", "-i", webm_file.name, wav_file.name], check=True)
-                wav_file.seek(offset=0)
+                wav_file.seek(0)
                 return self.clova.recognize_voice_by_file(file=wav_file)
 
     def grade(self, s3_information: AWSS3) -> None:
