@@ -1,3 +1,4 @@
+import subprocess
 from tempfile import NamedTemporaryFile
 from typing import Optional
 
@@ -73,12 +74,8 @@ class AnswerService:
 
         with NamedTemporaryFile(mode="r+b", suffix=".webm", delete=True) as webm_file:
             self.s3.download_file(object_key=object_key, bucket_name=bucket_name, file=webm_file)
-
-            # AudioSegment.ffmpeg = "./ffmpeg.exe"
-            # AudioSegment.ffprobe = "./ffprobe.exe"
-            webm_audio: AudioSegment = AudioSegment.from_file(webm_file.name)
             with NamedTemporaryFile(mode="r+b", suffix=".wav", delete=True) as wav_file:
-                webm_audio.export(wav_file.name, format="wav")
+                subprocess.run(["./ffmpeg", "-i", webm_file.name, wav_file.name], check=True)
                 wav_file.seek(offset=0)
                 return self.clova.recognize_voice_by_file(file=wav_file)
 
