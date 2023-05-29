@@ -13,7 +13,7 @@ class CRUDQuestion:
         statement: Executable = text(
             text="""
                 SELECT
-                    word AS words
+                    word
                 FROM question
                 WHERE CHAR_LENGTH(word) > 1;
             """

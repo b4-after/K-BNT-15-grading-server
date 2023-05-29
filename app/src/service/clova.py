@@ -6,7 +6,7 @@ from requests import Session  # type: ignore
 
 from src.constant import ClovaResultType
 from src.core import get_settings
-from src.custom import ClovaResponse
+from src.custom import ClovaBoostingKeywords, ClovaResponse
 
 
 class ClovaService:
@@ -41,7 +41,7 @@ class ClovaService:
 
         raise ValueError(response.get("message"))
 
-    def recognize_voice_by_file(self, file: BinaryIO, boostings: list[dict[str, str]]) -> str:
+    def recognize_voice_by_file(self, file: BinaryIO, boosting_keywords: list[ClovaBoostingKeywords]) -> str:
         target_url: HttpUrl = "".join([ClovaService._CLOVA_SPEECH_API_INVOKE_URL, "/recognizer/upload"])
         response: ClovaResponse = self.session.post(
             url=target_url,
@@ -53,7 +53,7 @@ class ClovaService:
                         {
                             "language": "ko-KR",
                             "completion": "sync",
-                            "boostings": boostings,
+                            "boostings": boosting_keywords,
                         },
                         ensure_ascii=False,
                     ).encode("UTF-8"),

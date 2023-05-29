@@ -66,3 +66,7 @@ class ClovaResponse(TypedDict):
     text: NotRequired[str]
     confidence: NotRequired[float]
     speakers: NotRequired[list[ClovaSpeechSpeaker]]
+
+
+class ClovaBoostingKeywords(TypedDict):
+    words: str

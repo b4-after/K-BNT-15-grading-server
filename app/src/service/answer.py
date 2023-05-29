@@ -7,7 +7,7 @@ from pydantic import HttpUrl
 from sqlalchemy.orm import Session
 
 from src.constant import AnswerStatus
-from src.custom import AWSS3, Answer, Question
+from src.custom import AWSS3, Answer, ClovaBoostingKeywords, Question
 from src.database import CRUDAnswer, CRUDQuestion, get_db
 from src.service.aws import AWSS3Service
 from src.service.clova import ClovaService
@@ -59,6 +59,12 @@ class AnswerService:
         parsed_nouns: Optional[set[str]] = self._parse_nouns_from_text(text=recognized_text)
         return self._compare_all_nouns(nouns=parsed_nouns, answer_word=answer_word)
 
+    def _get_boosting_keywords(self, db: Session) -> list[ClovaBoostingKeywords]:
+        return [
+            ClovaBoostingKeywords(words=question.get("word"))
+            for question in self.question.get_all_over_two_characters(db=db)
+        ]
+
     def _grade_recognized_text(self, object_key: str, text: str, db: Session) -> None:
         answer: Answer = self.answer.get_by_object_key(db=db, object_key=object_key)
         print(answer)
@@ -68,14 +74,14 @@ class AnswerService:
         self.answer.update_state(db=db, answer_id=answer.get("answer_id"), answer_status=answer_status)
 
     def _recognize_text(self, db: Session, object_key: str, bucket_name: str) -> str:
-        questions: list[Question] = self.question.get_all_over_two_characters(db=db)
+        boosting_keywords: list[ClovaBoostingKeywords] = self._get_boosting_keywords(db=db)
         with NamedTemporaryFile(mode="r+b", suffix=".webm") as webm_file:
             self.s3.download_file(object_key=object_key, bucket_name=bucket_name, file=webm_file)
             with NamedTemporaryFile(mode="r+b", suffix=".wav") as wav_file:
                 subprocess.run(["./ffmpeg", "-y", "-i", webm_file.name, wav_file.name], check=True)
                 # self.s3.upload_file(object_key=wav_file.name, bucket_name=bucket_name, file=wav_file)
                 wav_file.seek(0)
-                return self.clova.recognize_voice_by_file(file=wav_file, boostings=questions)
+                return self.clova.recognize_voice_by_file(file=wav_file, boosting_keywords=boosting_keywords)
 
     def grade(self, s3_information: AWSS3) -> None:
         db: Session = next(get_db())
