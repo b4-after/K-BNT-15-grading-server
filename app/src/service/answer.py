@@ -7,8 +7,8 @@ from pydantic import HttpUrl
 from sqlalchemy.orm import Session
 
 from src.constant import AnswerStatus
-from src.custom import AWSS3, Answer
-from src.database import CRUDAnswer, get_db
+from src.custom import AWSS3, Answer, Question
+from src.database import CRUDAnswer, CRUDQuestion, get_db
 from src.service.aws import AWSS3Service
 from src.service.clova import ClovaService
 from src.service.google import SpeechToTextService
@@ -17,6 +17,7 @@ from src.service.google import SpeechToTextService
 class AnswerService:
     def __init__(self) -> None:
         self.answer: CRUDAnswer = CRUDAnswer()
+        self.question: CRUDQuestion = CRUDQuestion()
         self.s3: AWSS3Service = AWSS3Service()
         self.clova: ClovaService = ClovaService()
         self.google: SpeechToTextService = SpeechToTextService()
@@ -66,18 +67,19 @@ class AnswerService:
         )
         self.answer.update_state(db=db, answer_id=answer.get("answer_id"), answer_status=answer_status)
 
-    def _recognize_text(self, object_key: str, bucket_name: str) -> str:
+    def _recognize_text(self, db: Session, object_key: str, bucket_name: str) -> str:
+        questions: list[Question] = self.question.get_all_over_two_characters(db=db)
         with NamedTemporaryFile(mode="r+b", suffix=".webm") as webm_file:
             self.s3.download_file(object_key=object_key, bucket_name=bucket_name, file=webm_file)
             with NamedTemporaryFile(mode="r+b", suffix=".wav") as wav_file:
                 subprocess.run(["./ffmpeg", "-y", "-i", webm_file.name, wav_file.name], check=True)
                 # self.s3.upload_file(object_key=wav_file.name, bucket_name=bucket_name, file=wav_file)
                 wav_file.seek(0)
-                return self.clova.recognize_voice_by_file(file=wav_file)
+                return self.clova.recognize_voice_by_file(file=wav_file, boostings=questions)
 
     def grade(self, s3_information: AWSS3) -> None:
         db: Session = next(get_db())
         bucket_name: str = s3_information.get("bucket").get("name")
         object_key: str = s3_information.get("object").get("key")
-        recognized_text: str = self._recognize_text(object_key=object_key, bucket_name=bucket_name)
+        recognized_text: str = self._recognize_text(object_key=object_key, bucket_name=bucket_name, db=db)
         self._grade_recognized_text(object_key=object_key, text=recognized_text, db=db)

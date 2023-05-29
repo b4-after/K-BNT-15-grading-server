@@ -3,3 +3,4 @@ from src.custom.aws_types import AWSLambdaEventBody, AWSLambdaContext, AWSS3Even
 from src.custom.errors import NotFoundError
 from src.custom.http_types import HTTPResponse
 from src.custom.ncp_types import ClovaResponse
+from src.custom.question_types import Question

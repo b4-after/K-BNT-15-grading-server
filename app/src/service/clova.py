@@ -41,7 +41,7 @@ class ClovaService:
 
         raise ValueError(response.get("message"))
 
-    def recognize_voice_by_file(self, file: BinaryIO) -> str:
+    def recognize_voice_by_file(self, file: BinaryIO, boostings: list[dict[str, str]]) -> str:
         target_url: HttpUrl = "".join([ClovaService._CLOVA_SPEECH_API_INVOKE_URL, "/recognizer/upload"])
         response: ClovaResponse = self.session.post(
             url=target_url,
@@ -49,7 +49,14 @@ class ClovaService:
                 "media": file.read(),
                 "params": (
                     None,
-                    json.dumps({"language": "ko-KR", "completion": "sync"}, ensure_ascii=False).encode("UTF-8"),
+                    json.dumps(
+                        {
+                            "language": "ko-KR",
+                            "completion": "sync",
+                            "boostings": boostings,
+                        },
+                        ensure_ascii=False,
+                    ).encode("UTF-8"),
                     "application/json",
                 ),
             },
