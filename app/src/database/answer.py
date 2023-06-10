@@ -14,18 +14,32 @@ class CRUDAnswer:
 
         statement: Executable = text(
             text="""
-                SELECT
-                    target_answer.answer_id AS answer_id,
-                    question.word AS answer_word
-                FROM (
+                WITH cte (answer_id, question_id) AS (
                     SELECT
                         answer_id,
                         question_id
                     FROM answer
                     WHERE audio_file_object_key = :object_key
-                ) AS target_answer
-                JOIN question
-                USING (question_id);
+                )
+
+                SELECT
+                    answer_id,
+                    JSON_ARRAYAGG(word) AS answer_words
+                FROM (
+                    SELECT
+                        cte.answer_id AS answer_id,
+                        question.word AS word
+                    FROM cte
+                    JOIN question
+                    USING (question_id)
+                    UNION ALL
+                    SELECT
+                        cte.answer_id AS answer_id,
+                        synonym.synonym_word AS word
+                    FROM cte
+                    JOIN synonym
+                    USING (question_id)
+                ) AS target_answer;
             """
         ).bindparams(object_key=object_key)
         row: Row = db.execute(statement=statement).fetchone()

@@ -29,13 +29,13 @@ class AnswerService:
         """
         return ""
 
-    def _is_answer(self, word: str, answer_word: str) -> bool:
+    def _is_answer(self, word: str, answer_words: list[str]) -> bool:
         """
         To-do
             1. _soundex_algorithm_korean 메서드 사용하여 converted_word 변수 생성
             2. return 문에 converted_word == answer_word 조건 추가
         """
-        return word == answer_word
+        return word in answer_words
 
     def _parse_nouns_from_text(self, text: str) -> Optional[set[str]]:
         # parser: Kkma = Kkma()
@@ -46,18 +46,18 @@ class AnswerService:
 
         return set(text.split(sep=" "))
 
-    def _compare_all_nouns(self, nouns: Optional[set[str]], answer_word: str) -> AnswerStatus:
+    def _compare_all_nouns(self, nouns: Optional[set[str]], answer_words: list[str]) -> AnswerStatus:
         print("nouns: ", nouns)
         if not nouns:
             return AnswerStatus.INCORRECT
         for noun in nouns:
-            if self._is_answer(word=noun, answer_word=answer_word):
+            if self._is_answer(word=noun, answer_words=answer_words):
                 return AnswerStatus.CORRECT
         return AnswerStatus.INCORRECT
 
-    def _get_answer_state(self, recognized_text: str, answer_word: str) -> AnswerStatus:
+    def _get_answer_state(self, recognized_text: str, answer_words: list[str]) -> AnswerStatus:
         parsed_nouns: Optional[set[str]] = self._parse_nouns_from_text(text=recognized_text)
-        return self._compare_all_nouns(nouns=parsed_nouns, answer_word=answer_word)
+        return self._compare_all_nouns(nouns=parsed_nouns, answer_words=answer_words)
 
     def _get_boosting_keywords(self, db: Session) -> list[ClovaBoostingKeywords]:
         return [
@@ -69,7 +69,7 @@ class AnswerService:
         answer: Answer = self.answer.get_by_object_key(db=db, object_key=object_key)
         print(answer)
         answer_status: AnswerStatus = self._get_answer_state(
-            recognized_text=text, answer_word=answer.get("answer_word")
+            recognized_text=text, answer_words=answer.get("answer_words")
         )
         self.answer.update_state(db=db, answer_id=answer.get("answer_id"), answer_status=answer_status)
 
