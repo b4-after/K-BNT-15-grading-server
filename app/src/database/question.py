@@ -14,7 +14,15 @@ class CRUDQuestion:
             text="""
                 SELECT
                     word
-                FROM question
+                FROM (
+                    SELECT
+                        word
+                    FROM question
+                    UNION ALL
+                    SELECT
+                        synonym_word AS word
+                    FROM synonym
+                ) AS target_word
                 WHERE CHAR_LENGTH(word) > 1;
             """
         )
