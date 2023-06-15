@@ -3,15 +3,15 @@ from tempfile import NamedTemporaryFile
 from typing import Optional
 
 from konlpy.tag import Kkma
-from pydantic import HttpUrl
 from sqlalchemy.orm import Session
 
 from src.constant import AnswerStatus
-from src.custom import AWSS3, Answer, ClovaBoostingKeywords, Question
+from src.custom import AWSS3, Answer, ClovaBoostingKeywords
 from src.database import CRUDAnswer, CRUDQuestion, get_db
 from src.service.aws import AWSS3Service
 from src.service.clova import ClovaService
 from src.service.google import SpeechToTextService
+from src.util import soundex
 
 
 class AnswerService:
@@ -22,29 +22,12 @@ class AnswerService:
         self.clova: ClovaService = ClovaService()
         self.google: SpeechToTextService = SpeechToTextService()
 
-    def _soundex_algorithm_korean(self, word: str) -> str:
-        """
-        To-do
-            1. SounDex 알고리즘을 한국어에 적용
-        """
-        return ""
-
     def _is_answer(self, word: str, answer_words: list[str]) -> bool:
-        """
-        To-do
-            1. _soundex_algorithm_korean 메서드 사용하여 converted_word 변수 생성
-            2. return 문에 converted_word == answer_word 조건 추가
-        """
-        return word in answer_words
+        return word in answer_words or soundex(word) in answer_words
 
     def _parse_nouns_from_text(self, text: str) -> Optional[set[str]]:
-        # parser: Kkma = Kkma()
-        # return set(parser.nouns(phrase=text))\
-        print("text: ", text)
-        if not text:
-            return None
-
-        return set(text.split(sep=" "))
+        parser: Kkma = Kkma()
+        return set(parser.nouns(phrase=text))
 
     def _compare_all_nouns(self, nouns: Optional[set[str]], answer_words: list[str]) -> AnswerStatus:
         print("nouns: ", nouns)
